@@ -17,7 +17,10 @@ const uint8_t MIDRTP = 100;
 const uint8_t MINRTP = 0;
 
 const uint8_t UPPERMOTOR = 1; // motor connected to port 1 will always be placed on the upper portion of arm 
-const uint8_t LOWERMOTOR = 0; // motor connected to port 0 will always be placed on the lower portion of arm 
+const uint8_t LOWERMOTOR = 0; // motor connected to port 0 will always be placed on the lower portion of arm
+const int SIZE_OF_TEST_ARRAY = 15;
+const int TEST_ARRAY[SIZE_OF_TEST_ARRAY] = { 1 ,1 ,1 ,1 ,1, 2 ,2 ,2 ,2 ,2 ,3 ,3 ,3 ,3 ,3 }; // 5 tests for each effect. This array is const as test procedure should remain unchanged
+int randomised_test_array[SIZE_OF_TEST_ARRAY];
 
 void tcaselect(uint8_t i) { // function selects address of component on multiplexer based on port number. 
     if (i > 7) return;
@@ -80,7 +83,24 @@ void playback(int motor_selector) // based on input will give a 3 second playbac
     }
 }
 
+void test_array_scrambler()
+{
+    for (int i=0; i < SIZE_OF_TEST_ARRAY; i++) // pulling the values from const so that they can be shuffled 
+    {
+        randomised_test_array[i] = TEST_ARRAY[i];
+        
+    }
+    for (int i=0; i < SIZE_OF_TEST_ARRAY; i++) // code for this function taken from https://forum.arduino.cc/t/shuffle-an-array-of-ints/333494/2
+    {
+        int n = random(0, SIZE_OF_TEST_ARRAY);
+        int temp = randomised_test_array[n];
+        randomised_test_array[n] = randomised_test_array[i];
+        randomised_test_array[i] = temp;
+    }
+}
+
 // the setup function runs once when you press reset or power the board
+
 void setup() 
 {
     while (!Serial); // check if serial is working 
@@ -114,11 +134,20 @@ void setup()
         }
     }
 
+    for (int i =0; i < SIZE_OF_TEST_ARRAY; i++) // pulling the values from const so that they can be shuffled 
+    {
+        Serial.println(TEST_ARRAY[i]);
+    }
 }
 
 // the loop function runs over and over again until power down or reset
 void loop() 
 {
-    
-   
+    test_array_scrambler();
+    Serial.println("___________________________________________");
+    for (int i=0; i < SIZE_OF_TEST_ARRAY; i++) // pulling the values from const so that they can be shuffled 
+    {
+        Serial.println(randomised_test_array[i]);
+    }
+    delay(5000);
 }
