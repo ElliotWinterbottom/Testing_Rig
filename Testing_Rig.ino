@@ -18,9 +18,23 @@ const uint8_t MINRTP = 0;
 
 const uint8_t UPPERMOTOR = 1; // motor connected to port 1 will always be placed on the upper portion of arm 
 const uint8_t LOWERMOTOR = 0; // motor connected to port 0 will always be placed on the lower portion of arm
-const int SIZE_OF_TEST_ARRAY = 15;
-const int TEST_ARRAY[SIZE_OF_TEST_ARRAY] = { 1 ,1 ,1 ,1 ,1, 2 ,2 ,2 ,2 ,2 ,3 ,3 ,3 ,3 ,3 }; // 5 tests for each effect. This array is const as test procedure should remain unchanged
+const int SIZE_OF_TEST_ARRAY = 45;
+const int TEST_ARRAY[SIZE_OF_TEST_ARRAY] = { 1 ,1 ,1 ,1 ,1, 1 ,1 ,1 ,1 ,1, 1 ,1 ,1 ,1 ,1, 2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,3 ,3 ,3 ,3 ,3,3 ,3 ,3 ,3 ,3,3 ,3 ,3 ,3 ,3 }; // 5 tests for each effect. This array is const as test procedure should remain unchanged
 int randomised_test_array[SIZE_OF_TEST_ARRAY];
+bool continue_bit;
+
+
+void Button_ISR() // interrupt service routine for button press. 
+{
+    if (continue_bit = 0)
+    {
+        continue_bit = 1;
+    }
+    else
+    {
+        continue_bit = 0;
+    }
+}
 
 void tcaselect(uint8_t i) { // function selects address of component on multiplexer based on port number. 
     if (i > 7) return;
@@ -103,6 +117,8 @@ void test_array_scrambler()
 
 void setup() 
 {
+    pinMode(3, INPUT_PULLUP);
+
     while (!Serial); // check if serial is working 
     Wire.begin(); // begin I2C comms
     Serial.begin(115200);
@@ -134,20 +150,45 @@ void setup()
         }
     }
 
+
+    Serial.println("_______");
     for (int i =0; i < SIZE_OF_TEST_ARRAY; i++) // pulling the values from const so that they can be shuffled 
     {
         Serial.println(TEST_ARRAY[i]);
     }
+    Serial.println("_______");
 }
 
 // the loop function runs over and over again until power down or reset
+int testno = 0;
 void loop() 
 {
+    testno++;
     test_array_scrambler();
-    Serial.println("___________________________________________");
-    for (int i=0; i < SIZE_OF_TEST_ARRAY; i++) // pulling the values from const so that they can be shuffled 
+    Serial.println(testno);
+    for (int i = 0; i < SIZE_OF_TEST_ARRAY; i++)
     {
-        Serial.println(randomised_test_array[i]);
+        while(digitalRead(3) == HIGH)
+        {
+            delay(100);
+        }
+        playback(randomised_test_array[i]);
     }
-    delay(5000);
+
+    for (int i = 0; i < SIZE_OF_TEST_ARRAY; i++)
+    {
+        switch (randomised_test_array[i])
+        {
+            case 1:
+                Serial.println("upper");
+            break; 
+            case 2:
+                Serial.println("lower");
+            break;
+            case 3:
+                Serial.println("both");
+                break;
+        }
+    }
+
 }
