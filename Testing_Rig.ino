@@ -12,6 +12,13 @@ Adafruit_DRV2605 drv; // driver board object.
 #define TCAADDR 0x70 // I2C multiplexer Address 
 #define RTPMODE 5
 
+const uint8_t MAXRTP = 120; // max value actually ~128
+const uint8_t MIDRTP = 100;
+const uint8_t MINRTP = 0;
+
+const uint8_t UPPERMOTOR = 1; // motor connected to port 1 will always be placed on the upper portion of arm 
+const uint8_t LOWERMOTOR = 0; // motor connected to port 0 will always be placed on the lower portion of arm 
+
 void tcaselect(uint8_t i) { // function selects address of component on multiplexer based on port number. 
     if (i > 7) return;
 
@@ -19,6 +26,21 @@ void tcaselect(uint8_t i) { // function selects address of component on multiple
     Wire.write(1 << i);
     Wire.endTransmission();
 }
+
+void setmotor(uint8_t portNumber, bool ONOFF) 
+{
+    tcaselect(portNumber);
+    if (ONOFF == 1) 
+    {
+        drv.setRealtimeValue(MIDRTP);
+    }
+    else if(ONOFF == 0)
+    {
+        drv.setRealtimeValue(MINRTP);
+    }
+
+}
+
 
 // the setup function runs once when you press reset or power the board
 void setup() 
@@ -59,5 +81,5 @@ void setup()
 // the loop function runs over and over again until power down or reset
 void loop() 
 {
-  
+   
 }
