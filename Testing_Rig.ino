@@ -42,6 +42,44 @@ void setmotor(uint8_t portNumber, bool ONOFF)
 }
 
 
+void playback(int motor_selector) // based on input will give a 3 second playback of motors: 0 - neither, 1 - upper, 2 - lower, 3 - both.
+{
+    
+    if (motor_selector == 0)
+    {
+        setmotor(UPPERMOTOR,0);
+        setmotor(LOWERMOTOR, 0);
+        delay(3000);
+    }
+    else if(motor_selector == 1)
+    {
+        delay(100);
+        setmotor(UPPERMOTOR, 1);
+        setmotor(LOWERMOTOR, 0);
+        delay(3000);
+        setmotor(UPPERMOTOR, 0);
+        setmotor(LOWERMOTOR, 0);
+    }
+    else if (motor_selector == 2)
+    {
+        delay(100);
+        setmotor(UPPERMOTOR, 0);
+        setmotor(LOWERMOTOR, 1);
+        delay(3000);
+        setmotor(UPPERMOTOR, 0);
+        setmotor(LOWERMOTOR, 0);
+    }
+    else if(motor_selector == 3)
+    {
+        delay(100);
+        setmotor(UPPERMOTOR, 1);
+        setmotor(LOWERMOTOR, 1);
+        delay(3000);
+        setmotor(UPPERMOTOR, 0);
+        setmotor(LOWERMOTOR, 0);
+    }
+}
+
 // the setup function runs once when you press reset or power the board
 void setup() 
 {
@@ -81,5 +119,6 @@ void setup()
 // the loop function runs over and over again until power down or reset
 void loop() 
 {
+    
    
 }
