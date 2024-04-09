@@ -49,6 +49,8 @@ void setmotor(uint8_t portNumber, bool ONOFF)
 }
 
 
+
+
 void phantom_sensation_playback(int motor_selector) // based on input will give a 3 second playback of motors: 0 - neither, 1 - upper, 2 - lower, 3 - both.
 {
 
@@ -89,11 +91,17 @@ void phantom_sensation_playback(int motor_selector) // based on input will give 
 
 void apparent_tactile_motion_playback(int duration, int SOA)
 {
-    int playbackStart = millis();
-    int secondMotorStart = playbackStart + SOA; // first motor is UPPER, second motor is LOWER
+    long int playbackStart = millis();
+    long int secondMotorStart = playbackStart + SOA; // first motor is UPPER, second motor is LOWER
 
-    int firstMotorEnd = playbackStart + duration;
-    int secondMotorEnd = secondMotorStart + duration;
+    long int firstMotorEnd = playbackStart + duration;
+    long int secondMotorEnd = secondMotorStart + duration;
+    Serial.println("_______");
+    Serial.println(playbackStart);
+    Serial.println(secondMotorStart);
+    Serial.println(firstMotorEnd);
+    Serial.println(secondMotorEnd);
+    Serial.println("_______");
 
     while (1)
     {
@@ -101,7 +109,7 @@ void apparent_tactile_motion_playback(int duration, int SOA)
         {
             setmotor(UPPERMOTOR, 1);
         }
-        else
+        else if( millis()> firstMotorEnd)
         {
             setmotor(UPPERMOTOR, 0);
         }
@@ -112,6 +120,7 @@ void apparent_tactile_motion_playback(int duration, int SOA)
         else if (millis() > secondMotorEnd)
         {
             setmotor(LOWERMOTOR, 0);
+            
             return; // as soon as the second motor is done end the playback function
         }
 
@@ -143,8 +152,8 @@ void setup()
     while (!Serial); // check if serial is working 
     Wire.begin(); // begin I2C comms
     Serial.begin(115200);
-    Serial.println("please enter the test type: 0 for phantom sensation or 1 for apparent tactile motion");
-    testType = Serial.read();
+    //Serial.print("please enter the test type: 0 for phantom sensation or 1 for apparent tactile motion");
+    //testType = Serial.readString();
 
     Serial.println("TCA-Scanner ready! ");
 
@@ -199,6 +208,7 @@ void loop() {
                 delay(100);
             }
             phantom_sensation_playback(randomised_test_array[i]);
+            Serial.println(i);
         }
 
         for (int i = 0; i < SIZE_OF_TEST_ARRAY; i++)
@@ -225,12 +235,13 @@ void loop() {
         {
             delay(100);
         }
-        inputSOA = map(analogRead(A0), 0, 1024, 0, 200);
-        apparent_tactile_motion_playback(160, inputSOA);
+        inputSOA = map(analogRead(A0), 0, 1024, 0, 400);
+        apparent_tactile_motion_playback(3000, inputSOA);
+        Serial.println("Current SOA:");
+        Serial.println(inputSOA);
         break;
 
 
-    default:
-        break;
+
     }
 }
