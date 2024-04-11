@@ -1,6 +1,6 @@
 /*
  Name:    Testing_Rig.ino
- Created: 3/20/2024 3:09:07 PM
+ Created: 20/03/2024 3:09:07 PM
  Author:  Elliot Winterbottom [ID: 10918169]
 */
 
@@ -21,7 +21,7 @@ const uint8_t LOWERMOTOR = 0; // motor connected to port 0 will always be placed
 const int SIZE_OF_TEST_ARRAY = 45;
 const int TEST_ARRAY[SIZE_OF_TEST_ARRAY] = { 1 ,1 ,1 ,1 ,1, 1 ,1 ,1 ,1 ,1, 1 ,1 ,1 ,1 ,1, 2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,3 ,3 ,3 ,3 ,3,3 ,3 ,3 ,3 ,3,3 ,3 ,3 ,3 ,3 }; // 5 tests for each effect. This array is const as test procedure should remain unchanged
 int randomised_test_array[SIZE_OF_TEST_ARRAY];
-bool testType = 0; // 0 for phantom sensation, 1 for apparent motion 
+bool testType = 1; // 0 for phantom sensation, 1 for apparent motion 
 
 int testno = 0;
 int inputSOA = 0;// value ranges from 0 to 1024
@@ -48,7 +48,19 @@ void setmotor(uint8_t portNumber, bool ONOFF)
 
 }
 
+void setmotor_amplitude(uint8_t portNumber, uint8_t amplitude)
+{
+    if (amplitude > 256 || amplitude < 0 ) // if value is greater than that which can be specified by the motor driver (actual max is 256 but thought a buffer was apropriate).
+    {
+        Serial.println("value set exceeds max please try again");
 
+    } 
+    else
+    {
+        tcaselect(portNumber);
+        drv.setRealtimeValue(amplitude);
+    }
+}
 
 
 void phantom_sensation_playback(int motor_selector) // based on input will give a 3 second playback of motors: 0 - neither, 1 - upper, 2 - lower, 3 - both.
@@ -89,19 +101,19 @@ void phantom_sensation_playback(int motor_selector) // based on input will give 
     }
 }
 
-void apparent_tactile_motion_playback(int duration, int SOA)
+void apparent_tactile_motion_playback(int duration, int SOA) // version using SOA theory 
 {
-    long int playbackStart = millis();
-    long int secondMotorStart = playbackStart + SOA; // first motor is UPPER, second motor is LOWER
+    long long int playbackStart = millis();
+    long long int secondMotorStart = playbackStart + SOA; // first motor is UPPER, second motor is LOWER
 
-    long int firstMotorEnd = playbackStart + duration;
-    long int secondMotorEnd = secondMotorStart + duration;
-    Serial.println("_______");
-    Serial.println(playbackStart);
-    Serial.println(secondMotorStart);
-    Serial.println(firstMotorEnd);
-    Serial.println(secondMotorEnd);
-    Serial.println("_______");
+    long long int firstMotorEnd = playbackStart + duration;
+    long long int secondMotorEnd = secondMotorStart + duration;
+    //Serial.println("_______");
+    // Serial.println(playbackStart);
+    // Serial.println(secondMotorStart);
+    // Serial.println(firstMotorEnd);
+    // Serial.println(secondMotorEnd);
+    // Serial.println("_______");
 
     while (1)
     {
@@ -120,7 +132,7 @@ void apparent_tactile_motion_playback(int duration, int SOA)
         else if (millis() > secondMotorEnd)
         {
             setmotor(LOWERMOTOR, 0);
-            
+
             return; // as soon as the second motor is done end the playback function
         }
 
@@ -188,6 +200,9 @@ void setup()
         Serial.println(TEST_ARRAY[i]);
     }
     Serial.println("_______");
+
+
+    
 }
 
 
@@ -231,17 +246,17 @@ void loop() {
 
     case 1:
 
-        while (digitalRead(3) == HIGH)
+        for (int i = 0; i < 5; i++) 
         {
-            delay(100);
+            while (digitalRead(3) == HIGH)
+            {
+                delay(1);
+            }
+            apparent_tactile_motion_playback(160, i*8);
+
+            break;
+
         }
-        inputSOA = map(analogRead(A0), 0, 1024, 0, 400);
-        apparent_tactile_motion_playback(3000, inputSOA);
-        Serial.println("Current SOA:");
-        Serial.println(inputSOA);
-        break;
-
-
 
     }
 }
