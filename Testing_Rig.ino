@@ -21,7 +21,7 @@ const uint8_t LOWERMOTOR = 0; // motor connected to port 0 will always be placed
 const int SIZE_OF_TEST_ARRAY = 45;
 const int TEST_ARRAY[SIZE_OF_TEST_ARRAY] = { 1 ,1 ,1 ,1 ,1, 1 ,1 ,1 ,1 ,1, 1 ,1 ,1 ,1 ,1, 2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,2 ,3 ,3 ,3 ,3 ,3,3 ,3 ,3 ,3 ,3,3 ,3 ,3 ,3 ,3 }; // 5 tests for each effect. This array is const as test procedure should remain unchanged
 int randomised_test_array[SIZE_OF_TEST_ARRAY];
-bool testType = 1; // 0 for phantom sensation, 1 for apparent motion 
+bool testType = 0; // 0 for phantom sensation, 1 for apparent motion 
 
 int testno = 0;
 int inputSOA = 0;// value ranges from 0 to 1024
@@ -115,27 +115,39 @@ void apparent_tactile_motion_playback(int duration, int SOA) // version using SO
     // Serial.println(secondMotorEnd);
     // Serial.println("_______");
 
-    while (1)
+    if(SOA == 0)
     {
-        if (millis() <= firstMotorEnd)
+        setmotor(UPPERMOTOR, 1);
+        setmotor(LOWERMOTOR, 1);
+        delay(duration);
+        setmotor(UPPERMOTOR, 0);
+        setmotor(LOWERMOTOR, 0);
+    }
+    else {
+        while (1)
         {
-            setmotor(UPPERMOTOR, 1);
-        }
-        else if( millis()> firstMotorEnd)
-        {
-            setmotor(UPPERMOTOR, 0);
-        }
-        if (millis() <= secondMotorEnd && millis() >= secondMotorStart)
-        {
-            setmotor(LOWERMOTOR, 1);
-        }
-        else if (millis() > secondMotorEnd)
-        {
-            setmotor(LOWERMOTOR, 0);
+            if (millis() <= firstMotorEnd)
+            {
+                setmotor(UPPERMOTOR, 1);
+            }
+            else if (millis() > firstMotorEnd)
+            {
+                setmotor(UPPERMOTOR, 0);
+            }
 
-            return; // as soon as the second motor is done end the playback function
-        }
 
+            if (millis() <= secondMotorEnd && millis() >= secondMotorStart)
+            {
+                setmotor(LOWERMOTOR, 1);
+            }
+            else if (millis() > secondMotorEnd)
+            {
+                setmotor(LOWERMOTOR, 0);
+
+                return; // as soon as the second motor is done end the playback function
+            }
+
+        }
     }
 }
 
@@ -246,17 +258,19 @@ void loop() {
 
     case 1:
 
-        for (int i = 0; i < 5; i++) 
+        for (int i = 0; i < 26; i++) 
         {
             while (digitalRead(3) == HIGH)
             {
-                delay(1);
+                delay(100);
             }
             apparent_tactile_motion_playback(160, i*8);
+            Serial.println("SOA:");
+            Serial.println(i * 8);
 
-            break;
+            
 
         }
-
+        break;
     }
 }
