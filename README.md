@@ -2,6 +2,8 @@
 This repository is for the code used to test two tactile illusions as well as the results from a round of said testing. The two illusions both use vibrations and are
 1) phantom senstaion
 2) apprent tactile motion
+
+
 This was done for the 3rd year project of Elliot Winterbottom at the University of Manchester in 2023 to 2024
 
 Vibrotactile illusions
