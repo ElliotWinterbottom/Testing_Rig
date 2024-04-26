@@ -6,13 +6,13 @@ This repository is for the code used to test two tactile illusions as well as th
 
 This was done for the 3rd year project of Elliot Winterbottom at the University of Manchester in 2023 to 2024
 
-Vibrotactile illusions
+*Vibrotactile illusions*
 Phantom sensation uses two vibrational stimuli of constant amplitude in close proximity on the skin to create what appears to be a single vibration somewhere inbetween. 
 Apparent tactile motion uses a delay (called stimulus onset asynchrony or SOA) of the activation of two motors to create a moving or "brushing" stimulus between the motors. More information about said illusions can be found here:
 https://www.researchgate.net/publication/221518352_Tactile_Brush_Drawing_on_skin_with_a_tactile_grid_display/figures?lo=1
 This paper should also explain any terms or equations used in the code although it should be kept in mind that the attempted position of the phantom sensation is central between the the motors.
 
-Testing 
+*Testing*
 The aim of the test which this code supports was to determine whether the harware used could be made to induce the illusions described above. The hardware for used this project was:
 1) 1 X an arduino nano (ATMEGA) - https://store.arduino.cc/products/arduino-nano
 2) 1 X TCA9548A  - https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/arduino-wiring-and-test
@@ -26,7 +26,7 @@ The results for this test found that this hardware is incabable of producing suc
 The test script is also included for ease of reporducability although double checking with your institutions ethical guidelines for human testing is highly recommended as this test was checked before commencing.
 https://www.manchester.ac.uk/research/environment/governance/ethics/approval/
 
-Code
+*Code*
 the code itself was written for arduino platforms using the visual micro tool for visual studio both of which which can be downloaded here:
 https://visualstudio.microsoft.com/downloads/
 https://www.visualmicro.com/
@@ -44,7 +44,7 @@ However several libaries will be missing, more specifically:
 which will need to be dowloaded using the library manager tool:
 https://docs.arduino.cc/software/ide-v1/tutorials/installing-libraries/
 
-Results and script
+*Results and script*
 Test results are both available here as excel and word file respectively. A guide to using and opening these files can be found here:
 https://www.customguide.com/word/open-word-documents
 https://www.customguide.com/excel/open-excel-workbook
@@ -52,5 +52,7 @@ https://www.customguide.com/excel/open-excel-workbook
 the results sheet also holds calculations used for a chi-squared goodness of fit test comparing results to an estimated binomial distribution. more info about such a test can be found here:
 https://social-policy.org.uk/wordpress/wp-content/uploads/2015/02/workbook-4-01.2.15-BEST-FOR-SPA.pdf
 
+*There are no known issues with the code* however if any are found please contact me at:
+winterbottomelliot@gmail.com
 Best of luck to those attempting to render these illusions using off the shelf hardware and woe betide those who stray from the reccomendations of D. Alles.
 
